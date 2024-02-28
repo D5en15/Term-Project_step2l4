@@ -47,9 +47,9 @@ app.post('/saveuser', (req, res) => {
 // ฟังก์ชันสำหรับบันทึกข้อมูลผู้ใช้ในฐานข้อมูล
 function saveUserData(userData) {
   const { gender, name, location, email, login, picture ,dob} = userData;
-  const { title, first, last } = name;
+  const { title_name, first_name, last_name } = name;
   const { country } = location;
-  const { username, password, md5, sha1, sha256, uuid } = login;
+  const { username, password, m_md5, s_sha1, sha256, u_uid } = login;
   const { medium, large, thumbnail } = picture;
   const dateOfBirth = new Date(dob.date).toISOString().slice(0, 19).replace('T', ' '); // แปลงรูปแบบของวันเกิด
 
@@ -58,7 +58,7 @@ function saveUserData(userData) {
   // const sql = `INSERT INTO users (gender, title, first, last, country,dob, uuid, email, username, password, picture_large, picture_medium, picture_thumbnail) 
   //              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   const sql = 'INSERT INTO users SET ?';
-  const values = {gender, title, first, last, country,dob:dateOfBirth, uuid, email, username, password, md5, sha1, sha256, picture_large:large, picture_medium:medium, picture_thumbnail:thumbnail};
+  const values = {gender, title_name, first_name, last_name, country,dob:dateOfBirth, u_uid, email, username, password, m_md5, s_sha1, sha256, picture_large:large, picture_medium:medium, picture_thumbnail:thumbnail};
 
   connection.query(sql, values, (error, results, fields) => {
     if (error) {
