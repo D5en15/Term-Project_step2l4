@@ -10,6 +10,7 @@ const config = require('../dbconfig.js')[env];
 const connection = mysql.createConnection({
   host: config.host,
   user: config.user,
+  port: config.port,
   password: config.password,
   database: config.database
 })
@@ -32,17 +33,26 @@ app.get('/', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
-    axios.get('https://randomuser.me/api/?page=1&results=10')
-        .then(response => {
-            res.send(response.data);
-         });
+  axios.get('https://randomuser.me/api/?page=1&results=10')
+      .then(response => {
+          res.send(response.data);
+       })
+       .catch(error => {
+          console.error('Error fetching user data:', error);
+          res.status(500).send('Error fetching user data');
+       });
 });
+
 
 app.post('/saveuser', (req, res) => {
   const userData = req.body;
+  if (!userData) {
+    return res.status(400).send('Invalid user data');
+  }
   console.log(userData);
   saveUserData(userData);
 });
+
 
 // ฟังก์ชันสำหรับบันทึกข้อมูลผู้ใช้ในฐานข้อมูล
 function saveUserData(userData) {
@@ -55,8 +65,6 @@ function saveUserData(userData) {
 
   console.log(userData);
 
-  // const sql = `INSERT INTO users (gender, title, first, last, country,dob, uuid, email, username, password, picture_large, picture_medium, picture_thumbnail) 
-  //              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   const sql = 'INSERT INTO users SET ?';
   const values = {gender, title_name, first_name, last_name, country,dob:dateOfBirth, u_uid, email, username, password, m_md5, s_sha1, sha256, picture_large:large, picture_medium:medium, picture_thumbnail:thumbnail};
 
@@ -69,6 +77,6 @@ function saveUserData(userData) {
 }
 
 
-app.listen(3000, () => {
-    console.log('Server started on port 3000');
+app.listen(3031, () => {
+    console.log('Server started on port 3031');
 });
